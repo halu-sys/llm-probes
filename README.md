@@ -26,11 +26,18 @@ Results land in `results/*.json` + a terminal scoreboard.
 
 ## Results so far (flash = Qwen3.6-27B IQ3_S, 262k ctx, MTP spec, llama-swap :1236)
 
-| probe | result |
-|---|---|
-| P1 needle, 8k–256k × depths 5/50/95% | **30/30 PASS** (2 independent seed sets, n=2/cell) |
-| P3 instruction decay, 8k–256k | **4/4 PASS** — sum correct, JSON valid at 256k |
-| P4 degeneration, n=20 | 0 loops, 0 high-rep, mean rep 0.0% |
+| probe | flash (IQ3_S, Strata, 262k) | qwen27b (Q8, llama.cpp, 192k) |
+|---|---|---|
+| P1 needle, depths 5/50/95% | **30/30 PASS** 8k–256k (2 seed sets) | **9/9 PASS** 8k–128k |
+| P3 instruction decay | **4/4 PASS** to 256k (minor item-merge) | **3/3 PASS** to 128k (clean) |
+| P4 degeneration, n=20 | 0 loops, 0% rep | 0 loops, 0% rep |
+| P2 MTP speculation identity | N/A — MTP is Strata's decode path | **8/10 byte-identical** vs no-spec; control rerun 10/10 |
+
+P2 note: first attempt showed 0/10 divergence — cause was llama-swap
+`stripParams` removing `temperature`, so runs sampled at temp 0.6.
+Re-run on a dedicated probe instance (temp 0, no stripParams) gave the
+numbers above: speculation is lossless on all answer-critical cases;
+2 divergences started late in reasoning with identical token counts.
 
 Observation from P3: at every size the model sometimes merges two list
 items into one string ("lima charlie") — item count and sum stay correct,

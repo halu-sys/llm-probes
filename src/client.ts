@@ -10,7 +10,7 @@ export type ChatOpts = {
 export async function chat(
   messages: { role: string; content: string }[],
   opts: ChatOpts,
-): Promise<{ text: string; promptTokens: number; completionTokens: number; ms: number }> {
+): Promise<{ text: string; reasoning: string; finish: string; promptTokens: number; completionTokens: number; ms: number }> {
   const base = opts.baseUrl ?? "http://localhost:1236/v1";
   const t0 = Date.now();
   const res = await fetch(`${base}/chat/completions`, {
@@ -30,6 +30,8 @@ export async function chat(
   const ms = Date.now() - t0;
   return {
     text: j.choices?.[0]?.message?.content ?? "",
+    reasoning: j.choices?.[0]?.message?.reasoning_content ?? "",
+    finish: j.choices?.[0]?.finish_reason ?? "",
     promptTokens: j.usage?.prompt_tokens ?? 0,
     completionTokens: j.usage?.completion_tokens ?? 0,
     ms,
