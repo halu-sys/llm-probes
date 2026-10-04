@@ -1,0 +1,165 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "i": 0,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 3371,
+      "tokens": 96
+    },
+    {
+      "i": 1,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 3205,
+      "tokens": 109
+    },
+    {
+      "i": 2,
+      "prompt": "Explain what a database index is in 3 sentences.",
+      "rep": 0,
+      "loop": false,
+      "ms": 3955,
+      "tokens": 164
+    },
+    {
+      "i": 3,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2914,
+      "tokens": 106
+    },
+    {
+      "i": 4,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2574,
+      "tokens": 109
+    },
+    {
+      "i": 5,
+      "prompt": "List 12 fruits, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2279,
+      "tokens": 81
+    },
+    {
+      "i": 6,
+      "prompt": "List 12 fruits, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1583,
+      "tokens": 93
+    },
+    {
+      "i": 7,
+      "prompt": "Explain what a database index is in 3 sentences.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2807,
+      "tokens": 100
+    },
+    {
+      "i": 8,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2819,
+      "tokens": 109
+    },
+    {
+      "i": 9,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1879,
+      "tokens": 109
+    },
+    {
+      "i": 10,
+      "prompt": "List 12 fruits, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2866,
+      "tokens": 115
+    },
+    {
+      "i": 11,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2606,
+      "tokens": 106
+    },
+    {
+      "i": 12,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1815,
+      "tokens": 106
+    },
+    {
+      "i": 13,
+      "prompt": "Explain what a database index is in 3 sentences.",
+      "rep": 0,
+      "loop": false,
+      "ms": 4122,
+      "tokens": 175
+    },
+    {
+      "i": 14,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2909,
+      "tokens": 106
+    },
+    {
+      "i": 15,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2570,
+      "tokens": 109
+    },
+    {
+      "i": 16,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1888,
+      "tokens": 109
+    },
+    {
+      "i": 17,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1762,
+      "tokens": 109
+    },
+    {
+      "i": 18,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2297,
+      "tokens": 96
+    },
+    {
+      "i": 19,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 1557,
+      "tokens": 91
+    }
+  ]
+}

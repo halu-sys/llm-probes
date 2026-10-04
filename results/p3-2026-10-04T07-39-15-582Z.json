@@ -1,0 +1,13 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p3-2000-8000",
+      "size": 8000,
+      "pass": true,
+      "promptTokens": 6822,
+      "ms": 42388,
+      "answer": "{\"output\": [\"1086\", \"kilo\", \"lima charlie\"]}"
+    }
+  ]
+}

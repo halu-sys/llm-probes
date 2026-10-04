@@ -1,0 +1,37 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p3-2000-8000",
+      "size": 8000,
+      "pass": false,
+      "promptTokens": 6822,
+      "ms": 17273,
+      "answer": ""
+    },
+    {
+      "id": "p3-2001-32000",
+      "size": 32000,
+      "pass": false,
+      "promptTokens": 26942,
+      "ms": 124547,
+      "answer": ""
+    },
+    {
+      "id": "p3-2002-128000",
+      "size": 128000,
+      "pass": false,
+      "promptTokens": 107683,
+      "ms": 154708,
+      "answer": ""
+    },
+    {
+      "id": "p3-2003-256000",
+      "size": 256000,
+      "pass": false,
+      "promptTokens": 215054,
+      "ms": 209952,
+      "answer": ""
+    }
+  ]
+}

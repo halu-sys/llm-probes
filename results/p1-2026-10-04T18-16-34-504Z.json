@@ -1,0 +1,59 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p1-2000-8000-5",
+      "size": 8000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 6853,
+      "ms": 7200,
+      "answer": "9GUC-HQYQ"
+    },
+    {
+      "id": "p1-2001-8000-50",
+      "size": 8000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 6883,
+      "ms": 7152,
+      "answer": "DRRV-CLFP"
+    },
+    {
+      "id": "p1-2002-8000-95",
+      "size": 8000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 6885,
+      "ms": 6746,
+      "answer": "J85K-65BY"
+    },
+    {
+      "id": "p1-2003-32000-5",
+      "size": 32000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 27189,
+      "ms": 15646,
+      "answer": "N9BQ-AQXT"
+    },
+    {
+      "id": "p1-2004-32000-50",
+      "size": 32000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 27201,
+      "ms": 15756,
+      "answer": "MZ7X-3AXF"
+    },
+    {
+      "id": "p1-2005-32000-95",
+      "size": 32000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 27319,
+      "ms": 15689,
+      "answer": "SG9A-WLCV"
+    }
+  ]
+}

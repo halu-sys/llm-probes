@@ -1,0 +1,37 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p3-2000-8000",
+      "size": 8000,
+      "pass": true,
+      "promptTokens": 6822,
+      "ms": 69788,
+      "answer": "{\"output\": [\"1086\", \"kilo\", \"lima charlie\"]}"
+    },
+    {
+      "id": "p3-2001-32000",
+      "size": 32000,
+      "pass": true,
+      "promptTokens": 26942,
+      "ms": 126808,
+      "answer": "{\"result\": [\"1723\", \"kilo\", \"echo mike\"]}"
+    },
+    {
+      "id": "p3-2002-128000",
+      "size": 128000,
+      "pass": true,
+      "promptTokens": 107683,
+      "ms": 196731,
+      "answer": "{\"payload\": [\"2181\", \"delta bravo\", \"charlie\"]}"
+    },
+    {
+      "id": "p3-2003-256000",
+      "size": 256000,
+      "pass": true,
+      "promptTokens": 215054,
+      "ms": 227815,
+      "answer": "{\"payload\": [\"1621\", \"alpha\", \"lima charlie\"]}"
+    }
+  ]
+}

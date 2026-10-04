@@ -1,0 +1,32 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p1-2006-128000-5",
+      "size": 128000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 108743,
+      "ms": 49214,
+      "answer": "CXAC-898S"
+    },
+    {
+      "id": "p1-2007-128000-50",
+      "size": 128000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 108597,
+      "ms": 48791,
+      "answer": "CSMC-HP78"
+    },
+    {
+      "id": "p1-2008-128000-95",
+      "size": 128000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 108470,
+      "ms": 49341,
+      "answer": "K3KF-HTZU"
+    }
+  ]
+}
