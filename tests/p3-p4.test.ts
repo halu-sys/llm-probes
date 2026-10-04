@@ -15,13 +15,13 @@ describe("p3 decay case", () => {
   it("grader accepts correct JSON", () => {
     const c = makeDecayCase(3, 500);
     const sum = c.nums.reduce((a, b) => a + b, 0);
-    const ans = `{"${c.expectedKey}": ["${sum}", "x", "y"]}`;
+    const ans = `{"${c.expectedKey}": ["${sum}", "x", "y", "z"]}`;
     expect(gradeDecay(c, ans)).toBe(true);
   });
   it("grader accepts fenced JSON", () => {
     const c = makeDecayCase(4, 500);
     const sum = c.nums.reduce((a, b) => a + b, 0);
-    const ans = "```json\n" + `{"${c.expectedKey}": ["${sum}", "x", "y"]}` + "\n```";
+    const ans = "```json\n" + `{"${c.expectedKey}": ["${sum}", "x", "y", "z"]}` + "\n```";
     expect(gradeDecay(c, ans)).toBe(true);
   });
   it("grader rejects prose", () => {
