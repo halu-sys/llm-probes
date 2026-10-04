@@ -28,7 +28,7 @@ Results land in `results/*.json` + a terminal scoreboard.
 
 | probe | result |
 |---|---|
-| P1 needle, 8k–256k × depths 5/50/95% | **12/12 PASS** (n=1/cell) |
+| P1 needle, 8k–256k × depths 5/50/95% | **30/30 PASS** (2 independent seed sets, n=2/cell) |
 | P3 instruction decay, 8k–256k | **4/4 PASS** — sum correct, JSON valid at 256k |
 | P4 degeneration, n=20 | 0 loops, 0 high-rep, mean rep 0.0% |
 
