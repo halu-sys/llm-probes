@@ -10,6 +10,8 @@ Answers questions only THIS machine can answer:
 - Does MTP speculation change outputs? (P2, llama.cpp servers only)
 - Can the model COMPOSE facts scattered across context, not just retrieve
   one? Five function defs at 2/25/50/75/98% depth; answer f5(f4(f3(f2(f1(seed))))). (P5)
+- Does it understand a 250k-token synthetic CODEBASE — find every caller
+  of a core function scattered across files, no false positives? (P6)
 
 All probes are procedurally generated at runtime (seeded, reproducible,
 no training-data contamination) and graded by CODE (exact match, JSON
@@ -23,6 +25,7 @@ npx vitest run                                  # unit tests (graders/generators
 ./node_modules/.bin/tsx src/run-p3.ts flash 8000,32000,128000,256000 1
 ./node_modules/.bin/tsx src/run-p4.ts flash 20
 ./node_modules/.bin/tsx src/run-p5.ts flash 8000,32000,128000,256000 1
+./node_modules/.bin/tsx src/run-p6.ts flash 8000,32000,128000,256000 6 1
 ```
 
 Results land in `results/*.json` + a terminal scoreboard.
@@ -36,11 +39,20 @@ Results land in `results/*.json` + a terminal scoreboard.
 | P4 degeneration, n=20 | 0 loops, 0% rep | 0 loops, 0% rep |
 | P2 MTP speculation identity | N/A — MTP is Strata's decode path | **8/10 byte-identical** vs no-spec; control rerun 10/10 |
 | P5 multi-hop chain (5 scattered defs, compose f1..f5) | **4/4 PASS** 8k–256k | **4/4 PASS** 8k–128k |
+| P6 codebase caller-graph (6 callers scattered, 250k-tok doc) | **5/5 PASS** 8k–256k | 2/3 — 32k FAIL was empty answer (reasoning exhausted 4096-token budget), 128k PASS |
 
 P5 note: added after review feedback that P1 only measures single-fact
 retrieval. P5 requires locating five definitions at 2/25/50/75/98% depth
 AND composing them into one computation — retrieval + reasoning.
 Still n=1/cell; treat passes as strong indication, not proof.
+
+P6 note: synthetic multi-file Python codebase (seeded, unique names, no
+training-data contamination); question = list every caller of a core
+function, graded by exact set match + false-positive check. The one
+qwen27b FAIL at 32k was an EMPTY answer: reasoning_content consumed the
+entire 4096-token budget before content was emitted. Same failure mode
+seen in P3 at 2048 tokens. Deployment lesson: reasoning models on this
+stack need >=8k completion budgets or answers silently vanish.
 
 P2 note: first attempt showed 0/10 divergence — cause was llama-swap
 `stripParams` removing `temperature`, so runs sampled at temp 0.6.
