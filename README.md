@@ -34,8 +34,9 @@ Results land in `results/*.json` + a terminal scoreboard.
 
 | probe | flash (IQ3_S, Strata, 262k) | qwen27b (Q8, llama.cpp, 192k) |
 |---|---|---|
-| P1 needle, depths 5/50/95% | **30/30 PASS** 8k–256k (2 seed sets) | **9/9 PASS** 8k–128k |
+| P1 needle, depths 5/50/95% | **30/30 PASS** 8k–256k (2 seed sets) | **12/12 PASS** 8k–160k |
 | P3 instruction decay | **4/4 PASS** to 256k (minor item-merge) | **3/3 PASS** to 128k (clean) |
+| P3 v2 (fixed probe, strict per-item grade) | **4/4 strict** 8k–256k | **4/4 strict** 8k–160k |
 | P4 degeneration, n=20 | 0 loops, 0% rep | 0 loops, 0% rep |
 | P2 MTP speculation identity | N/A — MTP is Strata's decode path | **8/10 byte-identical** vs no-spec; control rerun 10/10 |
 | P5 multi-hop chain (5 scattered defs, compose f1..f5) | **4/4 PASS** 8k–256k | **4/4 PASS** 8k–128k |

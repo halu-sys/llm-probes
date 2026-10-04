@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { makeDecayCase, gradeDecayStrict } from "../src/probes/p3.js";
 
-const files = readdirSync("results").filter((f) => f.startsWith("p3-") && f.endsWith(".json"));
+const files = readdirSync("results").filter((f) => f.startsWith("p3-") && f.endsWith(".json") && !f.includes("-strict"));
 const summary: { file: string; model: string; lenient: number; strict: number; merged: number; total: number }[] = [];
 
 for (const f of files) {
