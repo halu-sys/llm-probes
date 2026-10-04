@@ -1,0 +1,113 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p1-1000-8000-5",
+      "size": 8000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 6911,
+      "ms": 7904,
+      "answer": "34Y6-APKD"
+    },
+    {
+      "id": "p1-1001-8000-50",
+      "size": 8000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 6965,
+      "ms": 80757,
+      "answer": "EJDL-X9V5"
+    },
+    {
+      "id": "p1-1002-8000-95",
+      "size": 8000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 6882,
+      "ms": 84232,
+      "answer": "PTPN-RVMF"
+    },
+    {
+      "id": "p1-1003-32000-5",
+      "size": 32000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 27264,
+      "ms": 97721,
+      "answer": "LH78-T5P9"
+    },
+    {
+      "id": "p1-1004-32000-50",
+      "size": 32000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 27247,
+      "ms": 128530,
+      "answer": "FJQW-TATW"
+    },
+    {
+      "id": "p1-1005-32000-95",
+      "size": 32000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 27344,
+      "ms": 16337,
+      "answer": "PYTU-YLHD"
+    },
+    {
+      "id": "p1-1006-128000-5",
+      "size": 128000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 108519,
+      "ms": 53510,
+      "answer": "MH78-68GN"
+    },
+    {
+      "id": "p1-1007-128000-50",
+      "size": 128000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 108511,
+      "ms": 52153,
+      "answer": "5HDP-FBAU"
+    },
+    {
+      "id": "p1-1008-128000-95",
+      "size": 128000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 108350,
+      "ms": 53941,
+      "answer": "2ZS5-QVEN"
+    },
+    {
+      "id": "p1-1009-256000-5",
+      "size": 256000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 216955,
+      "ms": 105434,
+      "answer": "YWPP-YKWM"
+    },
+    {
+      "id": "p1-1010-256000-50",
+      "size": 256000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 217153,
+      "ms": 107194,
+      "answer": "P36M-GLC8"
+    },
+    {
+      "id": "p1-1011-256000-95",
+      "size": 256000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 217240,
+      "ms": 106860,
+      "answer": "9X73-KPHA"
+    }
+  ]
+}

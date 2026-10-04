@@ -1,0 +1,32 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p1-1000-8000-5",
+      "size": 8000,
+      "depth": 0.05,
+      "pass": false,
+      "promptTokens": 6911,
+      "ms": 6622,
+      "answer": ""
+    },
+    {
+      "id": "p1-1001-8000-50",
+      "size": 8000,
+      "depth": 0.5,
+      "pass": false,
+      "promptTokens": 6965,
+      "ms": 6516,
+      "answer": ""
+    },
+    {
+      "id": "p1-1002-8000-95",
+      "size": 8000,
+      "depth": 0.95,
+      "pass": false,
+      "promptTokens": 6882,
+      "ms": 6468,
+      "answer": ""
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p1-1000-8000-5",
+      "size": 8000,
+      "depth": 0.05,
+      "pass": true,
+      "promptTokens": 6911,
+      "ms": 7717,
+      "answer": "34Y6-APKD"
+    },
+    {
+      "id": "p1-1001-8000-50",
+      "size": 8000,
+      "depth": 0.5,
+      "pass": true,
+      "promptTokens": 6965,
+      "ms": 7536,
+      "answer": "EJDL-X9V5"
+    },
+    {
+      "id": "p1-1002-8000-95",
+      "size": 8000,
+      "depth": 0.95,
+      "pass": true,
+      "promptTokens": 6882,
+      "ms": 7022,
+      "answer": "PTPN-RVMF"
+    }
+  ]
+}
