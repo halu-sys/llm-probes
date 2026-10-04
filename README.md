@@ -29,8 +29,13 @@ Results land in `results/*.json` + a terminal scoreboard.
 | probe | result |
 |---|---|
 | P1 needle, 8k–256k × depths 5/50/95% | **12/12 PASS** (n=1/cell) |
+| P3 instruction decay, 8k–256k | **4/4 PASS** — sum correct, JSON valid at 256k |
 | P4 degeneration, n=20 | 0 loops, 0 high-rep, mean rep 0.0% |
-| P3 decay | see results/ |
+
+Observation from P3: at every size the model sometimes merges two list
+items into one string ("lima charlie") — item count and sum stay correct,
+but exact item boundaries degrade. A stricter grader (per-item match)
+would catch this; current grader accepts it.
 
 Caveats: n=1 per cell is a smoke test, not statistics. Rerun with more
 seeds for confidence. P1 filler is prose-like; adversarial fillers

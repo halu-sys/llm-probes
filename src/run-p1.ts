@@ -1,5 +1,5 @@
 // P1 runner: needle-in-haystack sweep.
-// Usage: npx tsx src/run-p1.ts [model] [sizesCsv] [depthsCsv] [seedsPerCell]
+// Usage: npx tsx src/run-p1.ts [model] [sizesCsv] [depthsCsv] [seedsPerCell] [startSeed]
 // e.g.  npx tsx src/run-p1.ts flash 8000,32000 5,50,95 1
 import { mkdirSync, writeFileSync } from "node:fs";
 import { chat } from "./client.js";
@@ -14,7 +14,7 @@ type Row = { id: string; size: number; depth: number; pass: boolean; promptToken
 const rows: Row[] = [];
 
 async function main() {
-let seedCounter = 1000;
+let seedCounter = Number(process.argv[6] ?? 1000);
 for (const size of sizes) {
   for (const depth of depths) {
     for (let s = 0; s < seedsPerCell; s++) {
