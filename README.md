@@ -7,7 +7,9 @@ Answers questions only THIS machine can answer:
 - Is 262k context real at IQ3_S quantization? (P1)
 - Does format-following survive long context? (P3)
 - What is the actual loop/degeneration rate? (P4)
-- Does MTP speculation change outputs? (P2, needs server restart — manual)
+- Does MTP speculation change outputs? (P2, llama.cpp servers only)
+- Can the model COMPOSE facts scattered across context, not just retrieve
+  one? Five function defs at 2/25/50/75/98% depth; answer f5(f4(f3(f2(f1(seed))))). (P5)
 
 All probes are procedurally generated at runtime (seeded, reproducible,
 no training-data contamination) and graded by CODE (exact match, JSON
@@ -20,11 +22,12 @@ npx vitest run                                  # unit tests (graders/generators
 ./node_modules/.bin/tsx src/run-p1.ts flash 8000,32000,128000,256000 5,50,95 1
 ./node_modules/.bin/tsx src/run-p3.ts flash 8000,32000,128000,256000 1
 ./node_modules/.bin/tsx src/run-p4.ts flash 20
+./node_modules/.bin/tsx src/run-p5.ts flash 8000,32000,128000,256000 1
 ```
 
 Results land in `results/*.json` + a terminal scoreboard.
 
-## Results so far (flash = Qwen3.6-27B IQ3_S, 262k ctx, MTP spec, llama-swap :1236)
+## Results so far (flash = Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S, 262k ctx, MTP spec, llama-swap :1236; qwen27b = Qwen3.8-27B-Q8_0, 192k ctx)
 
 | probe | flash (IQ3_S, Strata, 262k) | qwen27b (Q8, llama.cpp, 192k) |
 |---|---|---|
@@ -32,6 +35,12 @@ Results land in `results/*.json` + a terminal scoreboard.
 | P3 instruction decay | **4/4 PASS** to 256k (minor item-merge) | **3/3 PASS** to 128k (clean) |
 | P4 degeneration, n=20 | 0 loops, 0% rep | 0 loops, 0% rep |
 | P2 MTP speculation identity | N/A — MTP is Strata's decode path | **8/10 byte-identical** vs no-spec; control rerun 10/10 |
+| P5 multi-hop chain (5 scattered defs, compose f1..f5) | **4/4 PASS** 8k–256k | **4/4 PASS** 8k–128k |
+
+P5 note: added after review feedback that P1 only measures single-fact
+retrieval. P5 requires locating five definitions at 2/25/50/75/98% depth
+AND composing them into one computation — retrieval + reasoning.
+Still n=1/cell; treat passes as strong indication, not proof.
 
 P2 note: first attempt showed 0/10 divergence — cause was llama-swap
 `stripParams` removing `temperature`, so runs sampled at temp 0.6.

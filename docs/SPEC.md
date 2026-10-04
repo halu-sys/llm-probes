@@ -6,7 +6,8 @@ Generic capability benchmarks (MMLU, Q4-vs-Q8 comparisons) already exist —
 lm-evaluation-harness, OpenCompass, llama-bench. We do NOT rebuild those.
 
 What nobody has measured: the EXACT deployment running on this machine —
-Qwen3.6-27B IQ3_S, 262k ctx, MTP speculative decoding, KV-calibrated with
+Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S (262k ctx, MTP speculative decoding,
+KV-calibrated) and Qwen3.8-27B-Q8_0 (192k ctx, llama.cpp). Generic
 --calibrate, served through llama-swap + Strata param rewriting. Published
 long-context evals do not cover IQ3_S at 262k with speculation enabled.
 Deployment decisions (is 262k real? did calibration hurt? does MTP change
