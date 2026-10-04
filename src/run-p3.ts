@@ -18,7 +18,7 @@ async function main() {
       try {
         const r = await chat(
           [{ role: "user", content: `${c.fullText}\n\n${c.question}` }],
-          { model, maxTokens: 512, temperature: 0 },
+          { model, maxTokens: 8192, temperature: 0 },
         );
         const pass = gradeDecay(c, r.text);
         rows.push({ id: c.id, size, pass, promptTokens: r.promptTokens, ms: r.ms, answer: r.text.slice(0, 200) });
