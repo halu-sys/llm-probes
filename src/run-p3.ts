@@ -2,7 +2,7 @@
 // Usage: node/tsx src/run-p3.ts [model] [sizesCsv] [seedsPerCell]
 import { mkdirSync, writeFileSync } from "node:fs";
 import { chat } from "./client.js";
-import { makeDecayCase, gradeDecay } from "./probes/p3.js";
+import { makeDecayCase, gradeDecay, gradeDecayStrict } from "./probes/p3.js";
 
 async function main() {
   const model = process.argv[2] ?? "flash";
@@ -21,8 +21,9 @@ async function main() {
           { model, maxTokens: 8192, temperature: 0 },
         );
         const pass = gradeDecay(c, r.text);
-        rows.push({ id: c.id, size, pass, promptTokens: r.promptTokens, ms: r.ms, answer: r.text.slice(0, 200) });
-        console.log(`${pass ? "PASS" : "FAIL"} (${r.promptTokens} tok, ${r.ms} ms) ans="${r.text.trim().slice(0, 60)}"`);
+        const strict = gradeDecayStrict(c, r.text);
+        rows.push({ id: c.id, size, pass, strict: strict.pass, merged: strict.merged, promptTokens: r.promptTokens, ms: r.ms, answer: r.text.slice(0, 200) });
+        console.log(`${pass ? "PASS" : "FAIL"}${strict.pass ? "/strict" : strict.merged ? "/MERGED" : "/strictFAIL"} (${r.promptTokens} tok, ${r.ms} ms) ans="${r.text.trim().slice(0, 60)}"`);
       } catch (e: any) {
         rows.push({ id: c.id, size, pass: false, promptTokens: 0, ms: 0, answer: `ERROR: ${e.message}` });
         console.log(`ERROR: ${e.message}`);

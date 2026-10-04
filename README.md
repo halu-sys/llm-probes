@@ -60,10 +60,14 @@ Re-run on a dedicated probe instance (temp 0, no stripParams) gave the
 numbers above: speculation is lossless on all answer-critical cases;
 2 divergences started late in reasoning with identical token counts.
 
-Observation from P3: at every size the model sometimes merges two list
-items into one string ("lima charlie") — item count and sum stay correct,
-but exact item boundaries degrade. A stricter grader (per-item match)
-would catch this; current grader accepts it.
+P3 probe v1 bug (found by strict re-grade): the v1 instruction demanded
+"exactly 3 items" while the question asked for sum + 3 words = 4 items —
+a contradiction. Both models reconciled it: flash MERGED two words
+("lima charlie", preserving all content), qwen27b DROPPED a word (losing
+content). The earlier "flash item-merge degradation" observation was
+wrong — it was our probe's fault, and flash's reconciliation was the
+better of the two. v1 results are kept as-is; v2 (consistent 4-item
+instruction) re-runs are marked strict in the runner output.
 
 Caveats: n=1 per cell is a smoke test, not statistics. Rerun with more
 seeds for confidence. P1 filler is prose-like; adversarial fillers
