@@ -14,8 +14,9 @@ async function main() {
     process.stdout.write(`${model} ... `);
     const r = await chat([{ role: "user", content: task }], { model, maxTokens: 16384, temperature: 0 });
     const out = `results/ab-${ts}-${model}.md`;
-    writeFileSync(out, `# ${model}\npromptTokens=${r.promptTokens} completion=${r.completionTokens} ms=${r.ms}\n\n## reasoning\n${r.reasoning}\n\n## answer\n${r.text}\n`);
     const empty = !r.text.trim();
+    writeFileSync(out, `# ${model}\npromptTokens=${r.promptTokens} completion=${r.completionTokens} ms=${r.ms}\n\n## answer\n${r.text}\n`);
+    if (r.reasoning.trim()) writeFileSync(`results/ab-${ts}-${model}-reasoning.md`, r.reasoning);
     console.log(`saved ${out}${empty ? "  *** WARNING: EMPTY ANSWER — reasoning exhausted the token budget ***" : ""}`);
   }
   console.log(`\ncompare: results/ab-${ts}-flash.md  vs  results/ab-${ts}-qwen27b.md`);
