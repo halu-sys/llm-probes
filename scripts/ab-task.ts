@@ -15,11 +15,12 @@ async function main() {
     const out = `results/ab-${ts}-${model}.md`;
     if (existsSync(out)) { console.log(`${model}: exists, skipping ${out}`); continue; }
     process.stdout.write(`${model} ... `);
-    const r = await chat([{ role: "user", content: task }], { model, maxTokens: 16384, temperature: 0 });
+    const r = await chat([{ role: "user", content: task }], { model, maxTokens: 32768, temperature: 0 });
     const empty = !r.text.trim();
-    writeFileSync(out, `# ${model}\npromptTokens=${r.promptTokens} completion=${r.completionTokens} ms=${r.ms}\n\n## answer\n${r.text}\n`);
+    writeFileSync(out, `# ${model}\npromptTokens=${r.promptTokens} completion=${r.completionTokens} finish=${r.finish} ms=${r.ms}\n\n## answer\n${r.text}\n`);
     if (r.reasoning.trim()) writeFileSync(`results/ab-${ts}-${model}-reasoning.md`, r.reasoning);
-    console.log(`saved ${out}${empty ? "  *** WARNING: EMPTY ANSWER — reasoning exhausted the token budget ***" : ""}`);
+    const flags = [empty ? "EMPTY ANSWER (reasoning exhausted budget)" : "", r.finish === "length" ? "TRUNCATED at token cap (finish=length)" : ""].filter(Boolean).join("; ");
+    console.log(`saved ${out}${flags ? `  *** ${flags} ***` : ""}`);
   }
   console.log(`\ncompare: results/ab-${ts}-flash.md  vs  results/ab-${ts}-qwen27b.md`);
 }
