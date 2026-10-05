@@ -17,6 +17,9 @@ export async function chat(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     signal: AbortSignal.timeout(opts.timeoutMs ?? 600_000),
+    // undici defaults headersTimeout to 300s; model swaps (unload+load) can exceed that
+    headersTimeout: opts.timeoutMs ?? 600_000,
+    bodyTimeout: opts.timeoutMs ?? 600_000,
     body: JSON.stringify({
       model: opts.model,
       messages,
