@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # P2 experiment, one shot: unload flash -> probe instance -> 3 phases -> cleanup
 set -x
-cd /c/Users/zo/Projects/llm-probes
+cd "$(dirname "$0")/.."
 
 # 1. free VRAM: unload flash from the main :1236 instance
 curl -s "http://localhost:1236/unload"

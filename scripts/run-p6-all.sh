@@ -3,7 +3,7 @@
 #   cd /c/Users/zo/Projects/llm-probes && bash scripts/run-p6-all.sh
 # Results: results/p6-<timestamp>.json (one file per size, saved even if a
 # later size fails). Progress prints per run.
-cd /c/Users/zo/Projects/llm-probes || exit 1
+cd "$(dirname "$0")/.." || exit 1
 
 echo "=== flash: 32k, 128k, 256k (6 callers) ==="
 ./node_modules/.bin/tsx src/run-p6.ts flash 32000 6 1
