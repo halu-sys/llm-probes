@@ -1,0 +1,34 @@
+{
+  "uid": "llm-farm",
+  "title": "LLM Farm — rig1",
+  "tags": ["llm", "farm"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    { "id": 1, "type": "timeseries", "title": "GPU util %", "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [{"expr": "llamaswap_gpu_util_percent", "legendFormat": "{{name}}"}],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 }, "overrides": [] } },
+    { "id": 2, "type": "timeseries", "title": "GPU VRAM used", "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [{"expr": "llamaswap_gpu_memory_used_bytes", "legendFormat": "{{name}}"}],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] } },
+    { "id": 3, "type": "timeseries", "title": "GPU temp C", "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8},
+      "targets": [{"expr": "llamaswap_gpu_temperature_celsius", "legendFormat": "{{name}}"}],
+      "fieldConfig": { "defaults": { "unit": "celsius" }, "overrides": [] } },
+    { "id": 4, "type": "timeseries", "title": "GPU power W", "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
+      "targets": [{"expr": "llamaswap_gpu_power_draw_watts", "legendFormat": "{{name}}"}],
+      "fieldConfig": { "defaults": { "unit": "watt" }, "overrides": [] } },
+    { "id": 5, "type": "timeseries", "title": "GPU fan %", "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
+      "targets": [{"expr": "llamaswap_gpu_fan_speed_percent", "legendFormat": "{{name}}"}],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 }, "overrides": [] } },
+    { "id": 6, "type": "timeseries", "title": "System RAM", "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "targets": [
+        {"expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes", "legendFormat": "used"},
+        {"expr": "node_memory_MemAvailable_bytes", "legendFormat": "available"}],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] } },
+    { "id": 7, "type": "timeseries", "title": "CPU load avg (1m)", "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "targets": [{"expr": "node_load1", "legendFormat": "load1"},
+                  {"expr": "count(node_cpu_seconds_total{mode=\"system\"})", "legendFormat": "cores"}],
+      "fieldConfig": { "defaults": {}, "overrides": [] } }
+  ]
+}
