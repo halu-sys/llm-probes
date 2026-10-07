@@ -12,6 +12,10 @@ Answers questions only THIS machine can answer:
   one? Five function defs at 2/25/50/75/98% depth; answer f5(f4(f3(f2(f1(seed))))). (P5)
 - Does it understand a 250k-token synthetic CODEBASE — find every caller
   of a core function scattered across files, no false positives? (P6)
+- SYSTEM-level (not model-level): does a task survive a multi-hop agent
+  delegation chain — value composed across hops, secret code carried,
+  constraints obeyed — and does a parallel fan-out merge keep every
+  worker's fact? (P7, routes each hop by llama-swap role alias)
 
 All probes are procedurally generated at runtime (seeded, reproducible,
 no training-data contamination) and graded by CODE (exact match, JSON
@@ -26,11 +30,13 @@ npx vitest run                                  # unit tests (graders/generators
 ./node_modules/.bin/tsx src/run-p4.ts flash 20
 ./node_modules/.bin/tsx src/run-p5.ts flash 8000,32000,128000,256000 1
 ./node_modules/.bin/tsx src/run-p6.ts flash 8000,32000,128000,256000 6 1
+./node_modules/.bin/tsx src/run-p7.ts flash 2,3,5 1        # chain (hops, role-routed)
+./node_modules/.bin/tsx src/run-p7.ts flash 2,4 1 --fan    # parallel fan-out + merge
 ```
 
 Results land in `results/*.json` + a terminal scoreboard.
 
-## Results so far (flash = Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S, 262k ctx, MTP spec, llama-swap :1236; qwen27b = Qwen3.8-27B-Q8_0, 192k ctx)
+## Results so far (flash = Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S, 262k ctx, MTP spec, llama-swap :1236; qwen27b = Qwen3.8-27B-Q8_0, 192k ctx — retired 2026-10-05, comparison columns are point-in-time, not maintained)
 
 | probe | flash (IQ3_S, Strata, 262k) | qwen27b (Q8, llama.cpp, 192k) |
 |---|---|---|
@@ -41,6 +47,8 @@ Results land in `results/*.json` + a terminal scoreboard.
 | P2 MTP speculation identity | N/A — MTP is Strata's decode path | **8/10 byte-identical** vs no-spec; control rerun 10/10 |
 | P5 multi-hop chain (5 scattered defs, compose f1..f5) | **4/4 PASS** 8k–256k | **4/4 PASS** 8k–128k |
 | P6 codebase caller-graph (6 callers scattered, 250k-tok doc) | **5/5 PASS** 8k–256k | 2/3 — 32k FAIL was empty answer (reasoning exhausted 4096-token budget), 128k PASS |
+| P7a delegation chain (role-routed hops) | **7/9** — 2h: 1/3, 3h: 3/3, 5h: 3/3 | n/a |
+| P7b parallel fan-out + merge | **4/4** — 2w: 2/2, 4w: 2/2 | n/a |
 
 P5 note: added after review feedback that P1 only measures single-fact
 retrieval. P5 requires locating five definitions at 2/25/50/75/98% depth
@@ -72,7 +80,17 @@ instruction) re-runs are marked strict in the runner output.
 
 Caveats: n=1 per cell is a smoke test, not statistics. Rerun with more
 seeds for confidence. P1 filler is prose-like; adversarial fillers
-(repetitive code, tables) stress KV cache differently.
+(repetitive code, tables) stress KV cache differently. P7 cells use
+n=2-3; its 2 chain FAILs were format-label typos, not composition
+failures — see CASE-STUDIES.md #6.
+
+## Case studies
+
+Six production incidents (symptom → diagnosis → root cause → fix →
+prevention) in [CASE-STUDIES.md](CASE-STUDIES.md): param-stripping
+invalidating an eval, reasoning budgets silently eating answers, a
+probe bug that flipped a conclusion, an unraisable HTTP timeout,
+context caps from name-matching metadata, and P7's delegation findings.
 
 ## Honest limits
 
