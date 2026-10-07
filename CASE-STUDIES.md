@@ -1,6 +1,6 @@
 # Case studies: failure modes from a production local-LLM agent stack
 
-Six incidents from running a 2-GPU llama.cpp/Strata farm (RTX 3090 +
+Six incidents from running a 2-GPU llama.cpp/Strata stack (RTX 3090 +
 4070 Ti Super) serving an 11-profile multi-agent Hermes stack via
 llama-swap. Each: symptom → diagnosis → root cause → fix → prevention.
 All real, all logged at the time.
@@ -47,7 +47,7 @@ empty. `finish_reason` told the story once we recorded it.
 now record finish reason + a truncation flag; empty-answer warning flag
 in the harness.
 
-**Prevention.** Deployment rule adopted farm-wide: reasoning models
+**Prevention.** Deployment rule adopted stack-wide: reasoning models
 here never run with <8k completion budget. Harness surfaces finish
 reason on every call so this can never be silent again.
 
@@ -201,7 +201,7 @@ item. Measure the harness, not just the model.
 
 ---
 
-## 8. Two working styles in one farm: steppers vs batchers (P8 chain-12)
+## 8. Two working styles in one stack: steppers vs batchers (P8 chain-12)
 
 **Symptom.** 12-step two-file task (alternating appends across files A
 and B, read-back verification, per-file sums + grand total). All 10
@@ -227,6 +227,6 @@ Process signals are telemetry for tuning (cost, latency), not verdicts.
 Note: batching also cuts cost — batchers ran 2-3x fewer round-trips at
 similar wall time.
 
-**Lesson.** Same farm, same model, different personas produce
+**Lesson.** Same stack, same model, different personas produce
 structurally different execution styles. An operator's eval must be
 style-agnostic on the artifact axis and style-aware on the cost axis.
