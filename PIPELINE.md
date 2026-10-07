@@ -36,10 +36,17 @@ Design notes:
   last 3 entries so recurring anomalies get trend context, not
   one-shot amnesia.
 
-Collector: `~/.hermes/scripts/farm_triage_collect.py` (kept outside
-the repo because the cron runner resolves scripts under
-`~/.hermes/scripts/`). Cron job: `farm-triage-daily`, daily 08:00.
+Collector: `~/.hermes/scripts/farm_triage_collect.py` (copy in
+`monitoring/`; live version runs from `~/.hermes/scripts/` — the cron
+runner resolves scripts there). Cron job: `farm-triage-daily`, daily
+08:00.
 
-First live run: 2026-10-08. This document was written the day before,
-by the pipeline's author — the operator reviewed the guardrails, not
-the code.
+Status: **paused by operator** — the pipeline ran live (first HEALTHY
+entry, commit 834b361) and is kept here as a portfolio artifact; the
+operator does not run unattended agent jobs on the rig. Resume is one
+`cronjob resume` away; the design and guardrails are what's on
+display, not the schedule.
+
+First live run: 2026-10-07 (manual trigger, then scheduled). The
+design and guardrails were written by the pipeline's author; the
+operator reviewed the guardrails, not the code.
