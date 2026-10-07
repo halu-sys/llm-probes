@@ -102,6 +102,8 @@ agent boot economics, and steppers-vs-batchers grading.
   consequential-gated), context/cost guardrails, incident pipeline.
 - [COSTS.md](COSTS.md) — measured throughput, tuning wins, per-subagent
   boot payload (13.7K cold / ~1-3K cached), API-equivalent comparison.
+- [MONITORING.md](MONITORING.md) — live Prometheus + Grafana +
+  node_exporter stack; provisioned configs in `monitoring/`.
 
 ## Honest limits
 
