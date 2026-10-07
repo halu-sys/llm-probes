@@ -33,6 +33,8 @@ export type Task = {
   // for tool tasks: file the agent must create, and expected content check
   toolFile?: string;
   toolContentPattern?: RegExp;
+  toolFile2?: string;
+  toolContent2Pattern?: RegExp;
   // multistep: minimum tool calls expected (too few = skipped steps/faking)
   minCalls?: number;
 };
@@ -114,6 +116,59 @@ export function makeMultiStepTask(seed: number, profile: string, nSteps: number,
   };
 }
 
+// Production-hardening variant: longer chains + cross-file state.
+// Steps alternate appends across TWO files; agent must read both back,
+// verify line counts, and report per-file sums plus a grand total.
+// Failure modes this exposes that the 6-step task cannot:
+//   - state confusion between two files (wrong value in wrong file)
+//   - arithmetic drift as step count grows (12-16 values to track)
+//   - attention decay over a long numbered instruction list
+export function makeChainTask(seed: number, profile: string, nSteps: number, workdir: string): Task {
+  const r = rng(seed);
+  const fa = `${workdir}/p8cA_${seed}.txt`;
+  const fb = `${workdir}/p8cB_${seed}.txt`;
+  const valsA: number[] = [];
+  const valsB: number[] = [];
+  const steps: string[] = [];
+  steps.push(`1. Write file ${fa} containing the single line START`);
+  steps.push(`2. Write file ${fb} containing the single line START`);
+  for (let i = 0; i < nSteps; i++) {
+    const v = 10 + Math.floor(r() * 90);
+    const file = i % 2 === 0 ? fa : fb;
+    (i % 2 === 0 ? valsA : valsB).push(v);
+    steps.push(`${i + 3}. Append one line to ${file}: step${i + 1} value ${v}`);
+  }
+  const n = steps.length;
+  const sumA = valsA.reduce((s, v) => s + v, 0);
+  const sumB = valsB.reduce((s, v) => s + v, 0);
+  return {
+    id: `p8c-${seed}-${profile}-${nSteps}`,
+    profile,
+    prompt:
+      `Multi-step task with TWO files. Do each step with a tool call, in order:\n` +
+      steps.join("\n") +
+      `\n${n + 1}. Read BOTH files back and verify each has ${1 + Math.ceil(nSteps / 2)} lines for A / ${1 + Math.floor(nSteps / 2)} lines for B.\n` +
+      `${n + 2}. Reply with exactly three lines:\n` +
+      `SUMA: <sum of A step values>\nSUMB: <sum of B step values>\nTOTAL: <grand total>\n` +
+      `Do not skip steps; do not write either file in one shot.`,
+    expectPattern: new RegExp(`SUMA:\\s*${sumA}[\\s\\S]*SUMB:\\s*${sumB}[\\s\\S]*TOTAL:\\s*${sumA + sumB}`),
+    formatMarkers: ["SUMA:", "SUMB:", `TOTAL: ${sumA + sumB}`],
+    apiCallCap: nSteps + 10,
+    minCalls: nSteps + 2,
+    inputTokenCap: 120000,
+    kind: "multistep",
+    toolFile: fa,
+    toolContentPattern: new RegExp(
+      `START\n` + valsA.map((v, i) => `step${2 * i + 1} value ${v}`).join("\n")
+    ),
+    // second-file check lives in the runner (grader takes one file)
+    toolFile2: fb,
+    toolContent2Pattern: new RegExp(
+      `START\n` + valsB.map((v, i) => `step${2 * i + 2} value ${v}`).join("\n")
+    ),
+  };
+}
+
 export type Usage = {
   input_tokens: number;
   output_tokens: number;
@@ -130,22 +185,29 @@ export type Grade = {
   answerOk: boolean;
   formatOk: boolean;
   bounded: boolean;
+  processOk: boolean; // step-count window: deviates when batching legit work
   toolFileOk: boolean | null;
   pass: boolean;
 };
 
-export function gradeTask(t: Task, reply: string, usage: Usage, toolFileContent: string | null): Grade {
+// pass = artifact contract: completed + correct answer + format + files
+// exact + no loop/token overflow. The step-count window (minCalls) is a
+// PROCESS signal, reported separately: a subagent that batches appends
+// but leaves exact files did the work efficiently, not dishonestly.
+// A low call count with WRONG files is caught by toolFileOk anyway.
+export function gradeTask(t: Task, reply: string, usage: Usage, toolFileContent: string | null, toolFile2Content: string | null = null): Grade {
   const completed = usage.completed && !usage.failed && !usage.interrupted;
   const answerOk = t.expectPattern.test(reply);
   const formatOk = t.formatMarkers.every((m) => reply.includes(m));
-  const bounded =
-    usage.api_calls <= t.apiCallCap &&
-    usage.input_tokens <= t.inputTokenCap &&
-    (t.minCalls === undefined || usage.api_calls >= t.minCalls);
+  const bounded = usage.api_calls <= t.apiCallCap && usage.input_tokens <= t.inputTokenCap;
+  const processOk = t.minCalls === undefined || usage.api_calls >= t.minCalls;
   let toolFileOk: boolean | null = null;
   if (t.kind === "tool" || t.kind === "multistep") {
     toolFileOk = toolFileContent !== null && !!t.toolContentPattern && t.toolContentPattern.test(toolFileContent);
+    if (toolFileOk && t.toolFile2) {
+      toolFileOk = toolFile2Content !== null && !!t.toolContent2Pattern && t.toolContent2Pattern.test(toolFile2Content);
+    }
   }
   const pass = completed && answerOk && formatOk && bounded && (toolFileOk !== false);
-  return { completed, answerOk, formatOk, bounded, toolFileOk, pass };
+  return { completed, answerOk, formatOk, bounded, processOk, toolFileOk, pass };
 }

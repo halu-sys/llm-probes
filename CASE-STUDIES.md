@@ -198,3 +198,35 @@ only the agent-stack layer can see it.
 
 **Lesson.** The cheapest-looking agent call is the most expensive line
 item. Measure the harness, not just the model.
+
+---
+
+## 8. Two working styles in one farm: steppers vs batchers (P8 chain-12)
+
+**Symptom.** 12-step two-file task (alternating appends across files A
+and B, read-back verification, per-file sums + grand total). All 10
+profiles pass the artifact contract — but call counts split into two
+clusters: 15-16 calls (planner, architect, debugger, reviewer,
+researcher, documentor, prompter) vs 5-10 calls (coder, tester,
+refactorer).
+
+**Diagnosis.** The low-call profiles batch multiple appends into fewer
+tool calls. Files on disk are byte-exact and sums correct in both
+clusters — batching is efficiency, not skipped work. A naive grader
+that fails "too few calls" would falsely fail efficient agents; the
+first version of this grader did exactly that to coder.
+
+**Fix.** Grading split into two axes: `pass` = artifact contract
+(completed + correct answer + format + files exact + no loop/token
+overflow), `processOk` = step-window adherence, reported separately.
+Skipped steps with WRONG files are still caught by the file check —
+the artifact check subsumes the dishonesty case.
+
+**Prevention.** Grade what the agent leaves behind, not how it moved.
+Process signals are telemetry for tuning (cost, latency), not verdicts.
+Note: batching also cuts cost — batchers ran 2-3x fewer round-trips at
+similar wall time.
+
+**Lesson.** Same farm, same model, different personas produce
+structurally different execution styles. An operator's eval must be
+style-agnostic on the artifact axis and style-aware on the cost axis.

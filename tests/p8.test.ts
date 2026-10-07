@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeAnswerTask, makeToolTask, makeMultiStepTask, gradeTask, type Usage } from "../src/probes/p8.js";
+import { makeAnswerTask, makeToolTask, makeMultiStepTask, makeChainTask, gradeTask, type Usage } from "../src/probes/p8.js";
 
 const okUsage: Usage = {
   input_tokens: 13000, output_tokens: 20, api_calls: 1,
@@ -99,8 +99,8 @@ describe("P8 multistep task", () => {
   it("fails when steps were skipped (too few calls = faked it)", () => {
     const t = makeMultiStepTask(11, "coder", 6, "/tmp/p8test");
     const g = gradeTask(t, `FILE_OK yes\nSUM: 0`, { ...okUsage, api_calls: 2 }, "START");
-    expect(g.bounded).toBe(false); // below minCalls
-    expect(g.pass).toBe(false);
+    expect(g.processOk).toBe(false); // below minCalls
+    expect(g.pass).toBe(false);      // wrong file content also fails
   });
 
   it("fails on loop (too many calls)", () => {
@@ -109,3 +109,43 @@ describe("P8 multistep task", () => {
     expect(g.bounded).toBe(false);
   });
 });
+
+describe("P8 chain task (two files, long)", () => {
+  it("splits steps across A and B correctly", () => {
+    const t = makeChainTask(21, "coder", 6, "/tmp/p8test");
+    const a = readOrNull(t.toolFile!); void a; // file not created yet; just check patterns
+    const aVals = [...t.toolContentPattern!.source.matchAll(/step(\d+) value (\d+)/g)].map((m) => Number(m[1]));
+    const bVals = [...t.toolContent2Pattern!.source.matchAll(/step(\d+) value (\d+)/g)].map((m) => Number(m[1]));
+    expect(aVals).toEqual([1, 3, 5]);
+    expect(bVals).toEqual([2, 4, 6]);
+  });
+
+  it("passes when both files exact and sums correct", () => {
+    const t = makeChainTask(21, "coder", 6, "/tmp/p8test");
+    // RegExp.source escapes newlines as \\n — unescape to rebuild the file text
+    const fileA = t.toolContentPattern!.source.replace(/\\n/g, "\n");
+    const fileB = t.toolContent2Pattern!.source.replace(/\\n/g, "\n");
+    const aSum = [...fileA.matchAll(/value (\d+)/g)].reduce((s, m) => s + Number(m[1]), 0);
+    const bSum = [...fileB.matchAll(/value (\d+)/g)].reduce((s, m) => s + Number(m[1]), 0);
+    const reply = `SUMA: ${aSum}\nSUMB: ${bSum}\nTOTAL: ${aSum + bSum}`;
+    const g = gradeTask(t, reply, { ...okUsage, api_calls: 10 }, fileA, fileB);
+    expect(g.pass).toBe(true);
+  });
+
+  it("fails when file B has a value from A (state confusion)", () => {
+    const t = makeChainTask(21, "coder", 6, "/tmp/p8test");
+    const fileA = t.toolContentPattern!.source;
+    const g = gradeTask(t, `SUMA: 0\nSUMB: 0\nTOTAL: 0`, { ...okUsage, api_calls: 10 }, fileA, "START\nstep2 value 1\nstep4 value 1\nstep6 value 1");
+    expect(g.toolFileOk).toBe(false);
+    expect(g.pass).toBe(false);
+  });
+
+  it("flags skipped steps as process deviation (below minCalls)", () => {
+    const t = makeChainTask(21, "coder", 12, "/tmp/p8test");
+    const g = gradeTask(t, `x`, { ...okUsage, api_calls: 3 }, null, null);
+    expect(g.processOk).toBe(false);
+    expect(g.pass).toBe(false); // null files still fail via toolFileOk
+  });
+});
+
+function readOrNull(_p: string): null { return null; }

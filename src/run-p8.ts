@@ -9,14 +9,16 @@ import { mkdtempSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  PROFILES, makeAnswerTask, makeToolTask, makeMultiStepTask, gradeTask, type Task, type Usage,
+  PROFILES, makeAnswerTask, makeToolTask, makeMultiStepTask, makeChainTask, gradeTask, type Task, type Usage,
 } from "./probes/p8.js";
 
 const args = process.argv.slice(2);
 const withTool = args.includes("--tool");
 const multiSteps = args.includes("--multi") ? Number(args[args.indexOf("--multi") + 1] || 6) : 0;
-const multiValIdx = args.includes("--multi") ? args.indexOf("--multi") + 1 : -1;
-const positional = args.filter((a: string, i: number) => !a.startsWith("--") && i !== multiValIdx);
+const chainSteps = args.includes("--chain") ? Number(args[args.indexOf("--chain") + 1] || 12) : 0;
+const flagValIdxs = new Set<number>();
+for (const f of ["--multi", "--chain"]) if (args.includes(f)) flagValIdxs.add(args.indexOf(f) + 1);
+const positional = args.filter((a: string, i: number) => !a.startsWith("--") && !flagValIdxs.has(i));
 const profilesCsv = positional[0] ?? "planner,coder,tester";
 const profiles = profilesCsv.split(",");
 const tasksPerProfile = Number(positional[1] ?? 1);
@@ -32,7 +34,7 @@ const workdir = mkdtempSync(join(tmpdir(), "p8-"));
 
 type Row = {
   id: string; profile: string; kind: string; pass: boolean;
-  completed: boolean; answerOk: boolean; formatOk: boolean; bounded: boolean; toolFileOk: boolean | null;
+  completed: boolean; answerOk: boolean; formatOk: boolean; bounded: boolean; processOk: boolean; toolFileOk: boolean | null;
   apiCalls: number; inputTokens: number; outputTokens: number;
   turnExitReason: string; ms: number; reply: string;
 };
@@ -68,18 +70,20 @@ async function main() {
       const tasks: Task[] = [makeAnswerTask(seed++, profile, i)];
       if (withTool) tasks.push(makeToolTask(seed++, profile, i, workdir));
       if (multiSteps) tasks.push(makeMultiStepTask(seed++, profile, multiSteps, workdir));
+      if (chainSteps) tasks.push(makeChainTask(seed++, profile, chainSteps, workdir));
       for (const t of tasks) {
         const usagePath = join(workdir, `${t.id}-usage.json`);
         const { reply, usage, ms } = runHermes(profile, t.prompt, usagePath);
         const toolFileContent = t.toolFile && existsSync(t.toolFile) ? readFileSync(t.toolFile, "utf8") : null;
-        const g = gradeTask(t, reply, usage, toolFileContent);
+        const toolFile2Content = t.toolFile2 && existsSync(t.toolFile2) ? readFileSync(t.toolFile2, "utf8") : null;
+        const g = gradeTask(t, reply, usage, toolFileContent, toolFile2Content);
         rows.push({
           id: t.id, profile, kind: t.kind, pass: g.pass,
-          completed: g.completed, answerOk: g.answerOk, formatOk: g.formatOk, bounded: g.bounded, toolFileOk: g.toolFileOk,
+          completed: g.completed, answerOk: g.answerOk, formatOk: g.formatOk, bounded: g.bounded, processOk: g.processOk, toolFileOk: g.toolFileOk,
           apiCalls: usage.api_calls, inputTokens: usage.input_tokens, outputTokens: usage.output_tokens,
           turnExitReason: usage.turn_exit_reason, ms, reply: reply.slice(0, 400),
         });
-        console.log(`${t.id} ... ${g.pass ? "PASS" : "FAIL"} (done=${g.completed} ans=${g.answerOk} fmt=${g.formatOk} bound=${g.bounded}${g.toolFileOk === null ? "" : " file=" + g.toolFileOk}) ${usage.api_calls} calls, ${usage.input_tokens}+${usage.output_tokens} tok, ${Math.round(ms / 1000)}s`);
+        console.log(`${t.id} ... ${g.pass ? "PASS" : "FAIL"} (done=${g.completed} ans=${g.answerOk} fmt=${g.formatOk} bound=${g.bounded} proc=${g.processOk}${g.toolFileOk === null ? "" : " file=" + g.toolFileOk}) ${usage.api_calls} calls, ${usage.input_tokens}+${usage.output_tokens} tok, ${Math.round(ms / 1000)}s`);
         // incremental save — never lose the sweep to an interrupt
         writeFileSync(`results/p8-${new Date().toISOString().slice(0, 10)}.partial.json`, JSON.stringify({ profiles, rows }, null, 2));
       }

@@ -50,7 +50,8 @@ Results land in `results/*.json` + a terminal scoreboard.
 | P6 codebase caller-graph (6 callers scattered, 250k-tok doc) | **5/5 PASS** 8k–256k | 2/3 — 32k FAIL was empty answer (reasoning exhausted 4096-token budget), 128k PASS |
 | P7a delegation chain (role-routed hops) | **7/9** — 2h: 1/3, 3h: 3/3, 5h: 3/3 | n/a |
 | P7b parallel fan-out + merge | **4/4** — 2w: 2/2, 4w: 2/2 | n/a |
-| P8 Hermes agent stack (11 profiles x answer+tool) | **21/22** — only fail: orchestrator wrote the file correctly but replied `WROTE` without the filename | n/a |
+| P8 Hermes agent stack (10 profiles x answer+tool) | **21/22** — only fail: orchestrator wrote the file correctly but replied `WROTE` without the filename | n/a |
+| P8 chain-12 two-file task (10 profiles) | **20/20** — files exact on disk, sums correct; 3 profiles batched steps (proc-deviation, not failure) | n/a |
 
 P5 note: added after review feedback that P1 only measures single-fact
 retrieval. P5 requires locating five definitions at 2/25/50/75/98% depth
