@@ -98,12 +98,9 @@ agent boot economics, and steppers-vs-batchers grading.
 
 ## Operations & cost
 
-- [OPERATIONS.md](OPERATIONS.md) — autonomy model (read-autonomous,
-  consequential-gated), context/cost guardrails, incident pipeline.
-- [COSTS.md](COSTS.md) — measured throughput, tuning wins, per-subagent
-  boot payload (13.7K cold / ~1-3K cached), API-equivalent comparison.
-- [MONITORING.md](MONITORING.md) — live Prometheus + Grafana +
-  node_exporter stack; provisioned configs in `monitoring/`.
+Runtime operations of the machine this suite measures — guardrails
+runbook, cost ledger, observability stack, triage pipeline — live in
+the companion repo: [halu-sys/llm-ops](https://github.com/halu-sys/llm-ops).
 
 ## Honest limits
 
