@@ -9,13 +9,16 @@ import { mkdtempSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  PROFILES, makeAnswerTask, makeToolTask, gradeTask, type Task, type Usage,
+  PROFILES, makeAnswerTask, makeToolTask, makeMultiStepTask, gradeTask, type Task, type Usage,
 } from "./probes/p8.js";
 
 const args = process.argv.slice(2);
 const withTool = args.includes("--tool");
-const positional = args.filter((a: string) => !a.startsWith("--"));
-const profiles = (positional[0] ?? "orchestrator,coder,tester").split(",");
+const multiSteps = args.includes("--multi") ? Number(args[args.indexOf("--multi") + 1] || 6) : 0;
+const multiValIdx = args.includes("--multi") ? args.indexOf("--multi") + 1 : -1;
+const positional = args.filter((a: string, i: number) => !a.startsWith("--") && i !== multiValIdx);
+const profilesCsv = positional[0] ?? "planner,coder,tester";
+const profiles = profilesCsv.split(",");
 const tasksPerProfile = Number(positional[1] ?? 1);
 
 for (const p of profiles) {
@@ -64,6 +67,7 @@ async function main() {
     for (let i = 0; i < tasksPerProfile; i++) {
       const tasks: Task[] = [makeAnswerTask(seed++, profile, i)];
       if (withTool) tasks.push(makeToolTask(seed++, profile, i, workdir));
+      if (multiSteps) tasks.push(makeMultiStepTask(seed++, profile, multiSteps, workdir));
       for (const t of tasks) {
         const usagePath = join(workdir, `${t.id}-usage.json`);
         const { reply, usage, ms } = runHermes(profile, t.prompt, usagePath);

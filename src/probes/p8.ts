@@ -16,7 +16,9 @@
 
 import { rng, randomCode } from "../rng.js";
 
-export const PROFILES = ["orchestrator", "planner", "architect", "coder", "debugger", "tester", "reviewer", "refactorer", "researcher", "documentor", "prompter"] as const;
+export const PROFILES = ["planner", "architect", "coder", "debugger", "tester", "reviewer", "refactorer", "researcher", "documentor", "prompter"] as const;
+// orchestrator deliberately excluded: it is the PARENT role; probing it
+// as a subagent tests a configuration the farm never runs.
 
 export type Task = {
   id: string;
@@ -27,10 +29,12 @@ export type Task = {
   formatMarkers: string[];
   apiCallCap: number;
   inputTokenCap: number;
-  kind: "answer" | "tool";
+  kind: "answer" | "tool" | "multistep";
   // for tool tasks: file the agent must create, and expected content check
   toolFile?: string;
   toolContentPattern?: RegExp;
+  // multistep: minimum tool calls expected (too few = skipped steps/faking)
+  minCalls?: number;
 };
 
 export function makeAnswerTask(seed: number, profile: string, idx: number): Task {
@@ -75,6 +79,41 @@ export function makeToolTask(seed: number, profile: string, idx: number, workdir
   };
 }
 
+// Multi-step long task: forces a sequence of dependent tool calls
+// (create -> append N lines -> verify -> report computed result).
+// Graded on final file state (exact line set), computed answer, and
+// call-count window: too few calls = skipped steps (faking), too many
+// = loop. This is the endurance/sequencing axis answer tasks can't see.
+export function makeMultiStepTask(seed: number, profile: string, nSteps: number, workdir: string): Task {
+  const r = rng(seed);
+  const fname = `p8ms_${seed}.txt`;
+  const path = `${workdir}/${fname}`;
+  const vals: number[] = [];
+  for (let i = 0; i < nSteps; i++) vals.push(10 + Math.floor(r() * 90));
+  const sum = vals.reduce((s, v) => s + v, 0);
+  return {
+    id: `p8ms-${seed}-${profile}-${nSteps}`,
+    profile,
+    prompt:
+      `Multi-step task. Do each step with a tool call, in order:\n` +
+      `1. Write file ${path} containing the single line START\n` +
+      vals.map((v, i) => `${i + 2}. Append one line to that file: step${i + 1} value ${v}`).join("\n") +
+      `\n${nSteps + 2}. Read the file back and verify it has ${nSteps + 1} lines.\n` +
+      `${nSteps + 3}. Reply with exactly two lines: FILE_OK <yes|no> and SUM: <sum of all step values>\n` +
+      `Do not skip steps; do not write the file in one shot.`,
+    expectPattern: new RegExp(`SUM:\\s*${sum}\\b`),
+    formatMarkers: ["FILE_OK", `SUM: ${sum}`],
+    apiCallCap: nSteps + 6,
+    inputTokenCap: 60000,
+    kind: "multistep",
+    minCalls: nSteps,
+    toolFile: path,
+    toolContentPattern: new RegExp(
+      `START\n` + vals.map((v, i) => `step${i + 1} value ${v}`).join("\n")
+    ),
+  };
+}
+
 export type Usage = {
   input_tokens: number;
   output_tokens: number;
@@ -99,9 +138,12 @@ export function gradeTask(t: Task, reply: string, usage: Usage, toolFileContent:
   const completed = usage.completed && !usage.failed && !usage.interrupted;
   const answerOk = t.expectPattern.test(reply);
   const formatOk = t.formatMarkers.every((m) => reply.includes(m));
-  const bounded = usage.api_calls <= t.apiCallCap && usage.input_tokens <= t.inputTokenCap;
+  const bounded =
+    usage.api_calls <= t.apiCallCap &&
+    usage.input_tokens <= t.inputTokenCap &&
+    (t.minCalls === undefined || usage.api_calls >= t.minCalls);
   let toolFileOk: boolean | null = null;
-  if (t.kind === "tool") {
+  if (t.kind === "tool" || t.kind === "multistep") {
     toolFileOk = toolFileContent !== null && !!t.toolContentPattern && t.toolContentPattern.test(toolFileContent);
   }
   const pass = completed && answerOk && formatOk && bounded && (toolFileOk !== false);

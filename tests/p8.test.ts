@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeAnswerTask, makeToolTask, gradeTask, type Usage } from "../src/probes/p8.js";
+import { makeAnswerTask, makeToolTask, makeMultiStepTask, gradeTask, type Usage } from "../src/probes/p8.js";
 
 const okUsage: Usage = {
   input_tokens: 13000, output_tokens: 20, api_calls: 1,
@@ -74,5 +74,38 @@ describe("P8 tool task", () => {
     const t = makeToolTask(3, "coder", 0, "/tmp/p8test");
     const g = gradeTask(t, `WROTE x`, okUsage, "totally different");
     expect(g.toolFileOk).toBe(false);
+  });
+});
+
+describe("P8 multistep task", () => {
+  it("file pattern demands START + all step lines in order", () => {
+    const t = makeMultiStepTask(11, "coder", 4, "/tmp/p8test");
+    const vals = [...t.prompt.matchAll(/step\d+ value (\d+)/g)].map((m) => Number(m[1]));
+    expect(vals.length).toBe(4);
+    const good = `START\n${vals.map((v, i) => `step${i + 1} value ${v}`).join("\n")}`;
+    expect(t.toolContentPattern!.test(good)).toBe(true);
+    expect(t.toolContentPattern!.test("START\nstep1 value 999")).toBe(false);
+  });
+
+  it("passes with full file, correct sum, calls in window", () => {
+    const t = makeMultiStepTask(11, "coder", 4, "/tmp/p8test");
+    const vals = [...t.prompt.matchAll(/step(\d+) value (\d+)/g)].map((m) => Number(m[2]));
+    const sum = vals.reduce((s, v) => s + v, 0);
+    const file = `START\n${vals.map((v, i) => `step${i + 1} value ${v}`).join("\n")}`;
+    const g = gradeTask(t, `FILE_OK yes\nSUM: ${sum}`, { ...okUsage, api_calls: 7 }, file);
+    expect(g.pass).toBe(true);
+  });
+
+  it("fails when steps were skipped (too few calls = faked it)", () => {
+    const t = makeMultiStepTask(11, "coder", 6, "/tmp/p8test");
+    const g = gradeTask(t, `FILE_OK yes\nSUM: 0`, { ...okUsage, api_calls: 2 }, "START");
+    expect(g.bounded).toBe(false); // below minCalls
+    expect(g.pass).toBe(false);
+  });
+
+  it("fails on loop (too many calls)", () => {
+    const t = makeMultiStepTask(11, "coder", 4, "/tmp/p8test");
+    const g = gradeTask(t, `x`, { ...okUsage, api_calls: 50 }, null);
+    expect(g.bounded).toBe(false);
   });
 });
