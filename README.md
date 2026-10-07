@@ -89,11 +89,19 @@ failures — see CASE-STUDIES.md #6.
 
 ## Case studies
 
-Six production incidents (symptom → diagnosis → root cause → fix →
+Eight production incidents (symptom → diagnosis → root cause → fix →
 prevention) in [CASE-STUDIES.md](CASE-STUDIES.md): param-stripping
 invalidating an eval, reasoning budgets silently eating answers, a
 probe bug that flipped a conclusion, an unraisable HTTP timeout,
-context caps from name-matching metadata, and P7's delegation findings.
+context caps from name-matching metadata, P7's delegation findings,
+agent boot economics, and steppers-vs-batchers grading.
+
+## Operations & cost
+
+- [OPERATIONS.md](OPERATIONS.md) — autonomy model (read-autonomous,
+  consequential-gated), context/cost guardrails, incident pipeline.
+- [COSTS.md](COSTS.md) — measured throughput, tuning wins, per-subagent
+  boot payload (13.7K cold / ~1-3K cached), API-equivalent comparison.
 
 ## Honest limits
 
