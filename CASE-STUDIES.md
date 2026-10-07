@@ -162,3 +162,39 @@ inverts the usual assumption that deep chains degrade.
 **Lesson.** "Solid output" is not one property. This stack passes
 5-hop fact composition and fails on a 5-letter label — a portfolio that
 only shows the passes would be lying.
+
+---
+
+## 7. Every subagent pays ~14K tokens of boot overhead (P8)
+
+**Symptom.** P8 spawns real Hermes subagents (`hermes -p <profile> -z`)
+and reads the gateway's usage file. A one-line arithmetic answer cost
+~13.6-13.9K input tokens before any output.
+
+**Diagnosis.** That is the per-subagent boot payload: SOUL.md persona +
+tool schemas + memory injection, resent on every fresh session. It is
+invisible to model-level probes (P1-P6) and serving-level probes (P7) —
+only the agent-stack layer can see it.
+
+**Also found.**
+- The orchestrator profile's tool task: file written correctly on disk,
+  but the reply line was `WROTE` with the filename dropped — a
+  persona-dependent format slip (21/22 overall).
+- Usage accounting is inconsistent across runs: some tool tasks report
+  ~270 input tokens (prompt-cache hits counted differently) while
+  siblings report ~13.9K. Treat per-task token accounting as directional
+  until the cache semantics are understood; averages across a profile
+  are the usable number.
+
+**Operator implications.**
+- Boot payload is the real budget consumer in fan-out: 5 subagents x
+  14K = 70K tokens before any task content. Size fan-out width and
+  delegation depth against this, not just against task size.
+- Profile SOUL.md files are cost-bearing assets: every KB added to a
+  persona is paid by every delegation to that profile.
+- Grade subagent output structurally (file on disk + regex on reply),
+  never by trusting the completion flag — the orchestrator case shows
+  `completed=true` with a contract-violating reply.
+
+**Lesson.** The cheapest-looking agent call is the most expensive line
+item. Measure the harness, not just the model.

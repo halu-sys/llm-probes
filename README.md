@@ -32,6 +32,7 @@ npx vitest run                                  # unit tests (graders/generators
 ./node_modules/.bin/tsx src/run-p6.ts flash 8000,32000,128000,256000 6 1
 ./node_modules/.bin/tsx src/run-p7.ts flash 2,3,5 1        # chain (hops, role-routed)
 ./node_modules/.bin/tsx src/run-p7.ts flash 2,4 1 --fan    # parallel fan-out + merge
+./node_modules/.bin/tsx src/run-p8.ts orchestrator,coder,tester 1 --tool  # real Hermes subagents (sequential)
 ```
 
 Results land in `results/*.json` + a terminal scoreboard.
@@ -49,6 +50,7 @@ Results land in `results/*.json` + a terminal scoreboard.
 | P6 codebase caller-graph (6 callers scattered, 250k-tok doc) | **5/5 PASS** 8k–256k | 2/3 — 32k FAIL was empty answer (reasoning exhausted 4096-token budget), 128k PASS |
 | P7a delegation chain (role-routed hops) | **7/9** — 2h: 1/3, 3h: 3/3, 5h: 3/3 | n/a |
 | P7b parallel fan-out + merge | **4/4** — 2w: 2/2, 4w: 2/2 | n/a |
+| P8 Hermes agent stack (11 profiles x answer+tool) | **21/22** — only fail: orchestrator wrote the file correctly but replied `WROTE` without the filename | n/a |
 
 P5 note: added after review feedback that P1 only measures single-fact
 retrieval. P5 requires locating five definitions at 2/25/50/75/98% depth

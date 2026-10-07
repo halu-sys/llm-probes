@@ -16,7 +16,7 @@
 
 import { rng, randomCode } from "../rng.js";
 
-export const PROFILES = ["orchestrator", "coder", "tester", "reviewer", "debugger", "planner"] as const;
+export const PROFILES = ["orchestrator", "planner", "architect", "coder", "debugger", "tester", "reviewer", "refactorer", "researcher", "documentor", "prompter"] as const;
 
 export type Task = {
   id: string;
