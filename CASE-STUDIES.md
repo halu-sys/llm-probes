@@ -1,6 +1,6 @@
 # Case studies: failure modes from a production local-LLM agent stack
 
-Six incidents from running a 2-GPU llama.cpp/Strata stack (RTX 3090 +
+Nine incidents from running a 2-GPU llama.cpp/Strata stack (RTX 3090 +
 4070 Ti Super) serving an 11-profile multi-agent Hermes stack via
 llama-swap. Each: symptom → diagnosis → root cause → fix → prevention.
 All real, all logged at the time.
