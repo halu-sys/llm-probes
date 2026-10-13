@@ -1,0 +1,116 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p7c-7000-2",
+      "size": 2,
+      "pass": true,
+      "valueOk": true,
+      "codeOk": true,
+      "formatOk": true,
+      "cleanNotes": true,
+      "hops": 2,
+      "promptTokens": 346,
+      "completionTokens": 206,
+      "ms": 44446,
+      "finalAnswer": "VALUE: 10\nCODE: 9DMJ-PLQM\nNOTES: Applied g2 transformation.",
+      "expected": 10,
+      "perHop": [
+        {
+          "role": "orchestrator",
+          "ms": 17568,
+          "promptTokens": 191,
+          "completionTokens": 115
+        },
+        {
+          "role": "coder",
+          "ms": 26878,
+          "promptTokens": 155,
+          "completionTokens": 91
+        }
+      ]
+    },
+    {
+      "id": "p7c-7001-3",
+      "size": 3,
+      "pass": true,
+      "valueOk": true,
+      "codeOk": true,
+      "formatOk": true,
+      "cleanNotes": true,
+      "hops": 3,
+      "promptTokens": 498,
+      "completionTokens": 303,
+      "ms": 70509,
+      "finalAnswer": "VALUE: 129\nCODE: XNAU-NYEG\nNOTES: Updated after applying g3.",
+      "expected": 129,
+      "perHop": [
+        {
+          "role": "orchestrator",
+          "ms": 34048,
+          "promptTokens": 189,
+          "completionTokens": 81
+        },
+        {
+          "role": "coder",
+          "ms": 19969,
+          "promptTokens": 155,
+          "completionTokens": 107
+        },
+        {
+          "role": "tester",
+          "ms": 16492,
+          "promptTokens": 154,
+          "completionTokens": 115
+        }
+      ]
+    },
+    {
+      "id": "p7c-7002-5",
+      "size": 5,
+      "pass": true,
+      "valueOk": true,
+      "codeOk": true,
+      "formatOk": true,
+      "cleanNotes": true,
+      "hops": 5,
+      "promptTokens": 843,
+      "completionTokens": 627,
+      "ms": 35887,
+      "finalAnswer": "VALUE: -71\nCODE: DDY5-S9PP\nNOTES: Applied g5(x) = x - 6 to -65",
+      "expected": -71,
+      "perHop": [
+        {
+          "role": "orchestrator",
+          "ms": 18104,
+          "promptTokens": 190,
+          "completionTokens": 141
+        },
+        {
+          "role": "coder",
+          "ms": 5159,
+          "promptTokens": 151,
+          "completionTokens": 151
+        },
+        {
+          "role": "tester",
+          "ms": 4176,
+          "promptTokens": 162,
+          "completionTokens": 134
+        },
+        {
+          "role": "reviewer",
+          "ms": 4261,
+          "promptTokens": 164,
+          "completionTokens": 105
+        },
+        {
+          "role": "debugger",
+          "ms": 4187,
+          "promptTokens": 176,
+          "completionTokens": 96
+        }
+      ]
+    }
+  ]
+}

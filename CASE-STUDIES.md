@@ -230,3 +230,38 @@ similar wall time.
 **Lesson.** Same stack, same model, different personas produce
 structurally different execution styles. An operator's eval must be
 style-agnostic on the artifact axis and style-aware on the cost axis.
+
+---
+
+## 9. Right files, wrong sum: the agent that couldn't add itself (P8, Q4_K_XL)
+
+**Symptom.** Quant-migration sweep (IQ3_S → unsloth UD Q4_K_XL),
+chain-12 two-file task, 10 profiles. 19/20 pass. The refactorer run:
+`completed=true`, `processOk=true` (15 calls, no skipped steps),
+`file=true` (both files byte-exact on disk) — but `answerOk=false`,
+`formatOk=false`. The reply reported `SUMA: 297 / SUMB: 297 /
+TOTAL: 594` with sums that did not match the values it had just
+written.
+
+**Diagnosis.** The agent executed all 12 appends correctly (the disk
+proves it), then re-derived the totals from memory in its final
+summary and mis-added. Pure arithmetic hallucination in the
+self-report — the artifact was right, the narration was wrong. This
+inverts case study #8: there, the process signal deviated while the
+artifact was correct; here the artifact is correct while the
+self-reported answer is wrong.
+
+**Fix.** None needed in the harness — the split grading axes caught
+it exactly as designed. `pass` (artifact contract) and the answer
+regex disagreed, which is precisely the signal an operator needs:
+trust the file, distrust the summary.
+
+**Prevention.** Any workflow that consumes an agent's reply as ground
+truth (sums, counts, statuses) must recompute from the artifact
+instead. `completed=true` + a wrong number is a contract violation
+the summary check exists to catch.
+
+**Lesson.** The most trustworthy thing an agent produces is what it
+leaves on disk, not what it says about it. #8 taught "grade the
+artifact, not the movement"; #9 adds "and never let the agent's own
+summary be the source of truth."

@@ -87,14 +87,41 @@ seeds for confidence. P1 filler is prose-like; adversarial fillers
 n=2-3; its 2 chain FAILs were format-label typos, not composition
 failures — see CASE-STUDIES.md #6.
 
+## Quant migration: IQ3_S → unsloth UD Q4_K_XL (2026-10-13)
+
+Same stack, new pack (`strata-unsloth-ud-q4_k_xl` via llama-swap
+`configq4kxl.yaml`). Full probe sweep run on the new quant before
+switching the default. Results (`results/p*-2026-10-13*.json`):
+
+| probe | Q4_K_XL | IQ3_S baseline |
+|---|---|---|
+| P1 needle 8k, depths 5/50/95% | 3/3 PASS | 3/3 |
+| P3 instruction decay 8k+32k | 2/2 PASS | 2/2 |
+| P4 degeneration n=5 | 0 loops, 0% rep | 0/5 |
+| P5 / P6 (8k, 2 callers) | pass | pass |
+| P7a chain 2/3/5 hops | **3/3, zero label drift** | 7/9 (2 `NOTS:` typos at 2h) |
+| P7b fan-out 2/4 workers | 2/2 | 2/2 |
+| P8 answer+chain-12, 10 profiles | **19/20** | 20/20 (chain) / 21/22 |
+
+The single P8 fail (refactorer chain-12) is the most interesting data
+point of the sweep: files byte-exact on disk, sums in the reply wrong
+— the agent wrote all 12 steps correctly, then mis-added its own
+append values in the summary. `completed=true`, `processOk=true`,
+`file=true`, `answerOk=false`. Grade the artifact, not the summary —
+see CASE-STUDIES.md #9.
+
+Boot-token note: avg input dropped to ~8.1-8.5K/task (was ~13.7K) —
+prompt-cache semantics still not fully understood; directional only.
+
 ## Case studies
 
-Eight production incidents (symptom → diagnosis → root cause → fix →
+Nine production incidents (symptom → diagnosis → root cause → fix →
 prevention) in [CASE-STUDIES.md](CASE-STUDIES.md): param-stripping
 invalidating an eval, reasoning budgets silently eating answers, a
 probe bug that flipped a conclusion, an unraisable HTTP timeout,
 context caps from name-matching metadata, P7's delegation findings,
-agent boot economics, and steppers-vs-batchers grading.
+agent boot economics, steppers-vs-batchers grading, and an agent
+whose files were right but whose summary sums were wrong.
 
 ## Operations & cost
 

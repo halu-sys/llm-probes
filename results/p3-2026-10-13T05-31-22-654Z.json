@@ -1,0 +1,25 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p3-2000-8000",
+      "size": 8000,
+      "pass": true,
+      "strict": true,
+      "merged": false,
+      "promptTokens": 6825,
+      "ms": 34261,
+      "answer": "{\"output\": [\"1086\", \"kilo\", \"lima\", \"charlie\"]}"
+    },
+    {
+      "id": "p3-2001-32000",
+      "size": 32000,
+      "pass": true,
+      "strict": true,
+      "merged": false,
+      "promptTokens": 26945,
+      "ms": 77689,
+      "answer": "{\"result\": [\"1723\", \"kilo\", \"echo\", \"mike\"]}"
+    }
+  ]
+}

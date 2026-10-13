@@ -1,0 +1,16 @@
+{
+  "model": "flash",
+  "nCallers": 2,
+  "rows": [
+    {
+      "id": "p6-7000-8000",
+      "size": 8000,
+      "pass": true,
+      "missing": [],
+      "extra": [],
+      "promptTokens": 7462,
+      "ms": 46875,
+      "answer": "sharded_prune, idempotent_commit"
+    }
+  ]
+}

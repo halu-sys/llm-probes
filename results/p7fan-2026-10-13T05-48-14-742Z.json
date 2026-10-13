@@ -1,0 +1,87 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p7f-7000-2",
+      "size": 2,
+      "pass": true,
+      "valueOk": true,
+      "codeOk": true,
+      "formatOk": true,
+      "cleanNotes": true,
+      "hops": 3,
+      "promptTokens": 384,
+      "completionTokens": 238,
+      "ms": 12707,
+      "finalAnswer": "SUM: 169\nCODE: WMT9-DMJP",
+      "expected": 169,
+      "perHop": [
+        {
+          "role": "worker",
+          "ms": 2852,
+          "promptTokens": 107,
+          "completionTokens": 58
+        },
+        {
+          "role": "worker",
+          "ms": 6268,
+          "promptTokens": 107,
+          "completionTokens": 114
+        },
+        {
+          "role": "merge",
+          "ms": 3587,
+          "promptTokens": 170,
+          "completionTokens": 66
+        }
+      ]
+    },
+    {
+      "id": "p7f-7001-4",
+      "size": 4,
+      "pass": true,
+      "valueOk": true,
+      "codeOk": true,
+      "formatOk": true,
+      "cleanNotes": true,
+      "hops": 5,
+      "promptTokens": 654,
+      "completionTokens": 485,
+      "ms": 21935,
+      "finalAnswer": "SUM: 208\nCODE: 3NYX-NAUN",
+      "expected": 208,
+      "perHop": [
+        {
+          "role": "worker",
+          "ms": 3437,
+          "promptTokens": 108,
+          "completionTokens": 123
+        },
+        {
+          "role": "worker",
+          "ms": 5835,
+          "promptTokens": 108,
+          "completionTokens": 60
+        },
+        {
+          "role": "worker",
+          "ms": 3038,
+          "promptTokens": 108,
+          "completionTokens": 106
+        },
+        {
+          "role": "worker",
+          "ms": 5789,
+          "promptTokens": 108,
+          "completionTokens": 98
+        },
+        {
+          "role": "merge",
+          "ms": 3836,
+          "promptTokens": 222,
+          "completionTokens": 98
+        }
+      ]
+    }
+  ]
+}

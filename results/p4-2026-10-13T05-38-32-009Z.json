@@ -1,0 +1,45 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "i": 0,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 8576,
+      "tokens": 97
+    },
+    {
+      "i": 1,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2720,
+      "tokens": 98
+    },
+    {
+      "i": 2,
+      "prompt": "Explain what a database index is in 3 sentences.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2880,
+      "tokens": 109
+    },
+    {
+      "i": 3,
+      "prompt": "Name 10 capital cities in Europe, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2418,
+      "tokens": 102
+    },
+    {
+      "i": 4,
+      "prompt": "List 15 breeds of dog, one per line.",
+      "rep": 0,
+      "loop": false,
+      "ms": 2077,
+      "tokens": 114
+    }
+  ]
+}

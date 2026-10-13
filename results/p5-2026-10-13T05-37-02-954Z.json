@@ -1,0 +1,14 @@
+{
+  "model": "flash",
+  "rows": [
+    {
+      "id": "p5-5000-8000",
+      "size": 8000,
+      "pass": true,
+      "promptTokens": 6883,
+      "ms": 42491,
+      "answer": "95",
+      "expected": 95
+    }
+  ]
+}
